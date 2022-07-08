@@ -1,0 +1,18 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+.project
+eth-discovery-ms/.settings/org.eclipse.core.resources.prefs
+eth-discovery-ms/.classpath
+eth-gateway-ms/.classpath
+eth-gateway-ms/.settings/
+eth-eureka-ems/.settings/
+.settings/
+eth-api-doc/.classpath
+eth-api-doc/target/
+eth-config-ems/.classpath
+eth-apidoc-ms/.classpath
+eth-config-ms/.classpath

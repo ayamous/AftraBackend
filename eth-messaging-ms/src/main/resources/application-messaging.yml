@@ -1,0 +1,50 @@
+aace:
+  eth:
+    smsprovider:
+      username: test
+      password: test
+      sender: ETH
+      message:
+        max: 3
+        time: 24
+        chrono-unit: HOURS
+    mail:
+      sender: contact@aace.com
+      support: a.mouhcineadam@gmail.com, a.mouhcine.itroad@gmail.com
+      subject: ESafe document sharing
+    message:
+      max-retry: 10
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  mail:
+    username: testitroad2021@gmail.com
+    password: Test@2021
+    host: ${aace.eth.mail.host:smtp.gmail.com}
+    port: ${aace.eth.mail.port:587}
+    test-connection: true
+    protocol: smtp
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+  freemarker:
+    template-loader-path: classpath:/templates/
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  mail:
+    username: testitroad2021@gmail.com
+    password: Test@2021
+    host: ${aace.eth.mail.host:smtp.gmail.com}
+    port: ${aace.eth.mail.port:587}
+    test-connection: true
+    protocol: smtp
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+  freemarker:
+    template-loader-path: classpath:/templates/

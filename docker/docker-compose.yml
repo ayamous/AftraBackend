@@ -1,0 +1,65 @@
+version: '2'
+services:
+  eth-discovery-ms:
+    image: eth-discovery-ms:0.0.1-SNAPSHOT
+    container_name: eth-discovery-ms-container
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+    ports:
+      - '8761:8761'
+    restart: always
+    
+  eth-config-ms:
+    image: eth-config-ms:0.0.1-SNAPSHOT
+    container_name: eth-config-ms-container
+    depends_on:
+          - eth-discovery-ms
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - EUREKA_URI=eth-discovery-ms
+    ports:
+      - '8088:8088'
+    
+
+  eth-gateway-ms:
+    image: eth-gateway-ms:0.0.1-SNAPSHOT
+    container_name: eth-gateway-ms-container
+    restart: always
+    depends_on:
+          - eth-discovery-ms
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - EUREKA_URI=eth-discovery-ms
+    ports:
+      - '8090:8090'
+
+  eth-core-ref-ms:
+    image: eth-core-ref-ms:0.0.1-SNAPSHOT
+    container_name: eth-core-ref-ms-container
+    restart: always
+    depends_on:
+      - eth-discovery-ms
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - EUREKA_URI=eth-discovery-ms
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://eth-core-ref-ms-postgresql:5432/eth?schema=eth'
+      - 'SPRING_CLOUD_CONFIG_URI=http://eth-config-ms:8088/config'
+    ports:
+      - '8091:8091'
+    volumes:
+      - /home/ubuntu/esafe:/home/ubuntu/esafe
+
+  eth-core-ref-ms-postgresql:
+    image: 'postgres:13.2'
+    container_name: eth-core-ref-ms-postgresql-container
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=eth
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '5432:5432'
+    depends_on:
+      - eth-core-ref-ms

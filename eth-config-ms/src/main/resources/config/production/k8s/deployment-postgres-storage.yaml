@@ -1,0 +1,44 @@
+# --------------------------------------------------------------------------------------------
+# link generation : 
+# - https://static.brandonpotter.com/kubernetes/DeploymentBuilder.html
+
+# 1) Create the Secret for private registry :
+#    - kubectl create secret postgres-config pstgCred --POSTGRES_DB=sccdb /
+#      --POSTGRES_USER=coref --POSTGRES_PASSWORD=*********
+
+# 2) Print & Ckeck the created Secret yaml file :
+#    - kubectl get secret pstgCred --output=yaml
+
+# 3) Deployment of the Gateway Microservice:
+#    - kubectl apply -f k8s/eth-platform/deployment-coref.yaml
+# ---------------------------------------------------------------------------------------------
+ 
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-volume
+  labels:
+    type: local
+    app: postgres
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim
+  labels:
+    app: postgres
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi

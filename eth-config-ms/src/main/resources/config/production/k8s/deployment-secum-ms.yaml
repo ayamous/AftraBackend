@@ -1,0 +1,53 @@
+# ---------------------------------------------------------------------
+# link generation : 
+# - https://static.brandonpotter.com/kubernetes/DeploymentBuilder.html
+---
+# 1) Create the Secret for private registry :
+#    - kubectl create secret docker-registry regcred --docker-server=registry.hub.docker.com /
+#      --docker-username=mchahdi --docker-password=*********
+---
+# 2) Print & Ckeck the created Secret yaml file :
+#    - kubectl get secret regcred --output=yaml
+---
+# 3) Deployment of the Gateway Microservice:
+#    - kubectl apply -f k8s/scc-platform/deployment-secum.yaml
+# ---------------------------------------------------------------------
+ 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secum
+spec:
+  selector:
+    matchLabels:
+      app: secum
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: secum
+    spec:
+      containers:
+        - name: eth-secum-ms
+          image: >-
+            registry.hub.docker.com/mchahdi/eth-platform:eth-security-ms-0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 3440
+      imagePullSecrets:
+        - name: regcred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: secum-service
+  labels:
+    name: secum-service
+spec:
+  ports:
+    - port: 9001
+      targetPort: 3440
+      protocol: TCP
+  selector:
+    app: secum
+  type: ClusterIP

@@ -1,0 +1,53 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://www.w3.org/1999/XSL/Transform"
+           targetNamespace="http://itroad.ma/ethub"  xmlns:tns="http://itroad.ma/ethub" elementFormDefault="qualified">
+
+    <xs:element name="sendDocumentRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="organizationId" type="xs:long"/>
+                <xs:element name="fileName" type="xs:string"/>
+                <xs:element name="file" type="xs:base64Binary"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getAllDocumentRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAllDocumentResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="tns:Document" minOccurs="0"
+                            maxOccurs="unbounded" name="documents" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="Document">
+        <xs:all>
+            <xs:element name="fileId" type="xs:long"/>
+            <xs:element name="fileName" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:element name="getDocumentRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="fileId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getDocumentResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="fileName" type="xs:string"/>
+                <xs:element name="file" type="xs:base64Binary"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

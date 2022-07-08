@@ -1,0 +1,70 @@
+
+# GATEWAY MICROSERVICE : Default Setting -----------------------------------------------------
+# ********************************************************************************************
+server.port: 8090
+spring.application.name: gateway-ms
+
+# --- Default Environnement ------------------------------------------------------------------------
+# **************************************************************************************************
+spring:
+  profiles: default
+
+  # DEFAULT : Data Migration Config ---------------------------------------------------------
+  liquibase:
+    enabled: false  
+  # DEFAULT : Spring Security config  -------------------------------------------------------  
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+zuul:
+  # DEFAULT : GAteway Base config  ------------------------------------------------------------
+  #prefix: /api
+  ignoredServices: '*'
+  routes:
+    secum:
+      path: /api/secum/**
+      serviceId: secum-ms
+      stripPrefix: false
+      sensitive-headers: #Cookie,Set-Cookie,Authorization,JWTData
+    coref:
+      path: /api/coref/**
+      serviceId: coref-ms
+      stripPrefix: false
+      sensitive-headers:  
+  
+# DEFAULT : LaodBalancing Config --------------------------------------------
+ribbon.ReadTimeout: 60000 
+
+# DEFAULT : Secum proxy Config --------------------------------------------  
+eth.secum.proxy.name: secum-ms
+eth.secum.proxy.path: /api/secum/v1
+
+  
+# DEFAULT : Service Discovery Config -------------------------------------------------------------  
+eureka: 
+  instance:
+    # The hostname of the service, to register the pod and turn it easier for the gateway to find it
+    hostname: gateway-ms
+    # Leave prefer ip address to allow the gateway inside the kubernetes cluster to find this service by it's pod ip
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    service-url: 
+      default-zone: ${EUREKA_URI:http://eureka-server:8761/eureka}
+
+
+--- 
+# --- DEV Environnement ---------------------------------------------------------------------------
+# *************************************************************************************************
+spring:
+  profiles: dev
+  profiles.include: default
+
+--- 
+# --- PROD Environnement ---------------------------------------------------------------------------
+# **************************************************************************************************
+spring:
+  profiles: prod
+  profiles.include: default
+ 

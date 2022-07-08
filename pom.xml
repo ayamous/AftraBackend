@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.5.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>ma.itroad.aace.eth</groupId>
+	<artifactId>eth-parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>ETH PLATEFORME : POM-PARENT</name>
+	<description>POM Parent of all ETH Platform Components</description>
+	<packaging>pom</packaging>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<mapstruct.version>1.4.2.Final</mapstruct.version>
+		<springfox.version>3.0.0</springfox.version>
+		<swagger2.version>3.0.0</swagger2.version>
+		<springdoc-openapi>1.4.1</springdoc-openapi>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring-cloud.version>Hoxton.SR6</spring-cloud.version>
+		<jib-maven-plugin.version>3.0.0</jib-maven-plugin.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>eth-core-md</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>eth-config-ms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>eth-discorevy-ms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>eth-gateway-ms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>eth-security-ms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>eth-core-ref-ms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>eth-embedded-keycloak-ms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>eth-messaging-ms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!--<dependency> <groupId>${project.groupId}</groupId> <artifactId>eth-config-ms</artifactId> 
+				<version>${project.version}</version> </dependency> <dependency> <groupId>${project.groupId}</groupId> 
+				<artifactId>eth-apidoc-ms</artifactId> <version>${project.version}</version> 
+				</dependency> -->
+
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<modules>
+		<module>eth-core-md</module>
+		<module>eth-config-ms</module>
+		<module>eth-discovery-ms</module>
+		<module>eth-gateway-ms</module>
+		<module>eth-core-ref-ms</module>
+		<module>eth-embedded-keycloak-ms</module>
+		<module>eth-messaging-ms</module>
+	</modules>
+
+</project>

@@ -1,0 +1,31 @@
+
+# EUREKA DISCOREVY SERVER : Default Setting --------------------------------------------
+# **************************************************************************************
+server.port: 8761
+spring.application.name: eureka-server
+
+
+# --- Default Environnement ------------------------------------------------------------------------
+# **************************************************************************************************
+spring:
+  profiles: default
+
+# DEFAULT : Service discovry Config -------------------------------------
+eureka:
+  numberRegistrySyncRetries: 1
+  instance:
+    preferIpAddress: true
+    hostname: ${spring.application.name}
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+  server:
+    enableSelfPreservation: false
+
+---
+# --- DEV Environnement ----------------------------------------------------------------
+# **************************************************************************************
+spring:
+  profiles: dev, prod
+  profiles.include: default
+

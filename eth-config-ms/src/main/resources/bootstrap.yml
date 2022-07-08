@@ -1,0 +1,45 @@
+server.port: 8088
+spring.application.name: config-service
+
+
+# --- Default Environnement ------------------------------------------------------------------------
+# **************************************************************************************************
+spring:
+  profiles: default
+  
+# DEFAULT : Service discovry Config -------------------------------------   
+eureka: 
+  instance:
+    hostname: config-service
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    service-url:
+      defaultZone: http://${eureka.uri:localhost}:${eureka.port:8761}/eureka/
+#spring:
+#  cloud:
+#    config:
+#      server.git:
+#        clone-on-start: false
+#        username: m.chahdi
+#        password: *********
+#        default.label: master
+#        uri: https://gitlab.com/dpm-gov/eth-deployment.git
+
+#  security.user:
+#    name: root
+#    password: s3cr3t
+
+# For File System:
+# Default repository is --> src/main/resources/config
+spring.profiles.active: native
+# For a customer base repository
+# spring.cloud.config.server.native.searchLocations: F:/DEV/ONP/SccConfigServerRepo/config 
+
+--- 
+# --- DEV Environnement ---------------------------------------------------------------------------
+# *************************************************************************************************
+spring:
+  profiles: dev
+  profiles.include: default     

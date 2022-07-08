@@ -1,0 +1,34 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: eth-embedded-keycloak-ms
+  datasource:
+    url: jdbc:postgresql://20.199.26.249:5433/eth
+    #url: jdbc:postgresql://51.83.43.245:5432/eth?schema=eth
+#    url: jdbc:postgresql://localhost:5432/eth
+    #url: jdbc:postgresql://localhost:5432/eth?schema=eth
+
+    username: postgres
+    password: root
+    driverClassName: org.postgresql.Driver
+    hikari:
+      schema: keycloak
+      username: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate.integration.envers.enabled: false
+    hibernate:
+      ddl-auto: update
+
+
+keycloak:
+  server:
+    contextPath: /auth
+    adminUser:
+      username: ethadmin
+      password: ethadmin
+    realmImportFile: eth-realm.json

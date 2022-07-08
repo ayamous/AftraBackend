@@ -1,0 +1,55 @@
+# --------------------------------------------------------------------------------------------
+# link generation : 
+# - https://static.brandonpotter.com/kubernetes/DeploymentBuilder.html
+
+# 1) Create the Secret for private registry :
+#    - kubectl create secret docker-registry regcred --docker-server=registry.hub.docker.com /
+#      --docker-username=mchahdi --docker-password=*********
+
+# 2) Print & Ckeck the created Secret yaml file :
+#    - kubectl get secret regcred --output=yaml
+
+# 3) Deployment of the Gateway Microservice:
+#    - kubectl apply -f k8s/scc-platform/deployment-coref.yaml
+# ---------------------------------------------------------------------------------------------
+ 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coref
+spec:
+  selector:
+    matchLabels:
+      app: coref
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: coref
+    spec:
+      containers:
+        - name: coref-ms
+          image: >-
+            # Get centralised values from jib-mvp-config.yaml & pom.xml files
+            # --> registry.hub.docker.com/mchahdi/eth-platform:eth-core-ref-ms-0.0.1-SNAPSHOT
+            ${container.image.target.url.base}:${project.artifactId}-${project.version}
+          ports:
+            - containerPort: 3430
+      imagePullSecrets:
+        - name: regcred
+
+#---
+apiVersion: v1
+kind: Service
+metadata:
+  name: coref-service
+  labels:
+    name: coref-service
+spec:
+  ports:
+    - port: ${container.port.tcp}
+      targetPort: 3430
+      protocol: TCP
+  selector:
+    app: coref
+  type: ClusterIP

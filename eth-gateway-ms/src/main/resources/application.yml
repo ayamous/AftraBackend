@@ -1,0 +1,61 @@
+
+# GATEWAY MICROSERVICE : Default Setting -----------------------------------------------------
+# ********************************************************************************************
+server.port: 8090
+spring.application.name: gateway-ms
+
+
+# --- Default Environnement ------------------------------------------------------------------------
+# **************************************************************************************************
+spring:
+  profiles: default
+zuul:
+  # DEFAULT : GAteway Base config  ------------------------------------------------------------
+  #prefix: /api
+  ignoredServices: '*'
+
+  routes:
+    coref:
+      path: /api/coref/**
+      serviceId: coref-ms
+      stripPrefix: false
+      sensitive-headers:
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+# DEFAULT : LaodBalancing Config --------------------------------------------
+ribbon.ReadTimeout: 60000
+
+---
+# --- DEV Environnement ---------------------------------------------------------------------------
+# *************************************************************************************************
+
+spring:
+  profiles: dev
+  profiles.include: default
+
+# DEFAULT : Service Discovery Config -------------------------------------------------------------
+eureka:
+  instance:
+    # The hostname of the service, to register the pod and turn it easier for the gateway to find it
+    hostname: gateway-ms
+    # Leave prefer ip address to allow the gateway inside the kubernetes cluster to find this service by it's pod ip
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    service-url:
+      defaultZone: http://${eureka.uri:localhost}:${eureka.port:8761}/eureka/
+
+---
+# --- PROD Environnement ---------------------------------------------------------------------
+# ********************************************************************************************
+# localy prod = dev
+spring:
+  profiles: prod
+  profiles.include: dev

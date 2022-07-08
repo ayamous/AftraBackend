@@ -1,0 +1,80 @@
+
+# API DOC UI MICROSERVICE : Default Setting --------------------------------------------
+# **************************************************************************************
+server.port: 8099
+spring.application.name: apidoc-ui-ms
+
+# --- Default Environnement ------------------------------------------------------------
+# **************************************************************************************
+spring:
+  profiles: default
+  
+  # DEFAULT : gateway forwarding Config ------------------------------------- 
+  cloud:
+    gateway:
+      discovery.locator.enabled: true
+      routes:
+      - id: secum-ms
+        uri: lb://secum-ms
+        predicates:
+        - Path=/secum/**
+        filters:
+        - RewritePath=/secum/(?<path>.*), /api/secum/v1/$\{path}
+      - id: secum-auth
+        uri: lb://secum-ms/auth
+        predicates:
+        - Path=/secum/auth/**
+        filters:
+        - RewritePath=/secum/(?<path>.*), /api/secum/v1/$\{path}  
+      - id: coref-ms
+        uri: lb://coref-ms
+        predicates:
+        - Path=/coref/**
+        filters:
+        - RewritePath=/coref/(?<path>.*), /api/coref/v1/$\{path}  
+      - id: openapi
+        uri: http://localhost:${server.port}
+        predicates:
+        - Path=/v1/api/**
+        filters:
+        - RewritePath=/v1/api/(?<path>.*), /$\{path}/v1/api 
+      
+# DEFAULT : Service discovry Config -------------------------------------   
+eureka: 
+  instance:
+    hostname: apidoc-ui-ms
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    service-url: 
+      default-zone: ${EUREKA_URI:http://eureka-server:8761/eureka}   
+
+# DEFAULT : OpenAPI Documentation Config ------------------------------------- 
+springdoc:
+  #pathsToMatch: /api/v0
+  api-docs:
+    enabled: true
+    groups.enabled: true
+    path: /v1/api  
+  
+  swagger-ui:
+    enabled: true
+    doc-expansion: none
+    tagsSorter: alpha
+    operationsSorter: alpha
+    path: /swgui.html  
+
+--- 
+# --- DEV Environnement ----------------------------------------------------------------
+# ***************************************************************************************
+spring.profiles: dev
+spring.profiles.include: default
+        
+--- 
+# --- PROD Environnement ----------------------------------------------------------------
+# ***************************************************************************************
+spring.profiles: prod
+spring.profiles.include: default
+       
+    

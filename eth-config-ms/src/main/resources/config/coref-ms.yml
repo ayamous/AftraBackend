@@ -1,0 +1,122 @@
+
+# CORE REF MICROSERVICE : Default Setting ----------------------------------------------------
+# ********************************************************************************************
+server.port: 8092
+spring.application.name: coref-ms
+
+
+# --- Default Environnement ------------------------------------------------------------------------
+# **************************************************************************************************
+spring:
+  profiles: default
+
+  # DEFAULT : Spring Data Rest, Servlet Path Configs -------------------------------------- 
+  mvc.servlet.path: /api/coref/v1
+  data:
+    rest:
+      # base-path has no effect from this place : using mvc.servlet.path instead
+      #base-path: /api/coref/v0
+      defaultPageSize: 10
+      maxPageSize: 20
+      pageParamName: page
+      limitParamName: size
+      #($propertyname,)+[asc|desc]
+      sortParamName: sort
+      returnBodyOnCreate: true
+      returnBodyOnUpdate: true
+      
+  # DEFAULT : Spring Security config  ------------------------------------------------------------------    
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+     
+
+# DEFAULT : Service discovry Config ------------------------------------- 
+eureka:
+  instance:
+    hostname: coref-ms
+    preferIpAddress: true
+  client:  
+    fetchRegistry: true
+    registerWithEureka: true
+    service-url.default-zone: ${EUREKA_URI:http://eureka-server:8761/eureka}  
+
+# DEFAULT : OpenAPI V3 Path Config -------------------------------------- 
+springdoc.api-docs.path: /v1/api
+
+
+--- 
+# --- Test Environnement ---------------------------------------------------------------------------
+# **************************************************************************************************
+spring:
+  profiles: test
+  profiles.include: default
+  
+  # TEST : Persistance layer Config ----------------------------------------------------------
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS ETH
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate.integration.envers.enabled: false
+    hibernate:
+      ddl-auto: create
+      
+  # TEST : Data Migration Config ------------------------------------------------------------- 
+  liquibase:
+    enabled: false
+
+
+--- 
+# --- Dev Environnement ----------------------------------------------------------------------
+# ********************************************************************************************
+
+spring:
+  profiles: dev
+  profiles.include: default
+
+  # DEV : Persistance layer Config ----------------------------------------------------------
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ethdb
+    username: coref
+    password: coref
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate.integration.envers.enabled: false
+    hibernate:
+      ddl-auto: update
+  
+  # DEV : Data Migration Config -------------------------------------------------------------   
+  liquibase:
+    enabled: false
+
+    
+--- 
+# --- PROD Environnement ---------------------------------------------------------------------------
+# **************************************************************************************************    
+    
+spring:
+  profiles: prod
+  profiles.include: default
+  
+  # PROD : Persistance layer Config ----------------------------------------------------------
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ethdb
+    username: secum
+    password: secum
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate.integration.envers.enabled: false
+    hibernate:
+      ddl-auto: none
+  
+  # PROD :Data Migration Config -------------------------------------------------------------   
+  liquibase:
+    enabled: true    
+

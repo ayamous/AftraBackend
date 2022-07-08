@@ -1,0 +1,148 @@
+
+# SECUM MICROSERVICE : Default Setting -------------------------------------------------------
+# ********************************************************************************************
+server.port: 8091
+spring.application.name: secum-ms
+
+# --- Default Environnement ------------------------------------------------------------
+# **************************************************************************************
+spring:
+  profiles: default 
+
+  # DEFAULT : Spring Data Rest, Servlet Path, and OpenAPI PAth Configs-------------------- 
+  mvc.servlet.path: /api/secum/v1
+  data:
+    rest:
+      # base-path has no effect from this place : using mvc.servlet.path instead
+      #base-path: /api/coref/v0
+      defaultPageSize: 10
+      maxPageSize: 20
+      pageParamName: page
+      limitParamName: size
+      #($propertyname,)+[asc|desc]
+      sortParamName: sort
+      returnBodyOnCreate: true
+      returnBodyOnUpdate: true
+      
+  # DEFAULT : Spring Security config  -------------------------------------------------------    
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+  
+  messages:
+    encoding: ISO-8859-1  
+ 
+  # DEFAULT : Mailing config  --------------------------------------  
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: smtptest38@gmail.com
+    password: itroad@2020
+    protocol: smtp
+
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true       
+    
+# DEFAULT : Service Discovery Config -------------------------------
+eureka: 
+  instance:
+    hostname: secum-ms
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    service-url: 
+      default-zone: ${EUREKA_URI:http://eureka-server:8761/eureka}
+      
+# DEFAULT : LaodBalancing Config -----------------
+ribbon.ReadTimeout: 60000 
+
+# DEFAULT : Gateway proxy Config -----------------------------------
+eth.gateway.auth.proxy.name: gateway-ms
+eth.gateway.auth.proxy.path: /gateway
+
+# DEFAULT : OpenAPI V3 Path Config ---------------------------------
+springdoc.api-docs.path: /v1/api
+
+
+--- 
+# --- Test Environnement ---------------------------------------------------------------------------
+# **************************************************************************************************
+
+spring:
+  profiles: test
+  profiles.include: default 
+  
+  # TEST : Data Source Config ----------------------------------- 
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS ETH
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate.integration.envers.enabled: false
+    hibernate:
+      ddl-auto: create-drop
+  # TEST : Data Migration Config ---------------------------------    
+  liquibase:
+    enabled: false
+  
+  
+--- 
+# --- Dev Environnement ----------------------------------------------------------------------
+# ********************************************************************************************
+
+spring:
+  profiles: dev
+  profiles.include: default 
+  
+  # DEV : Data Source Config ----------------------------------- 
+  datasource:
+    # psql -U secum --> create database sccdb; 
+    # psql -d sccdb -U secum -W --> create schema scc;
+    # \dn
+    url: jdbc:postgresql://localhost:5432/ethdb
+    username: secum
+    password: secum
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate.integration.envers.enabled: false
+    hibernate:
+      ddl-auto: update
+      
+  # DEV : Data Migration Config ---------------------------------  
+  liquibase:
+    enabled: false
+
+--- 
+# --- PROD Environnement ----------------------------------------------------------------------
+# ********************************************************************************************
+
+spring:
+  profiles: prod
+  profiles.include: default 
+  
+  # PROD : Data Source Config ----------------------------------- 
+  datasource:
+    # psql -U secum --> create database sccdb; 
+    # psql -d sccdb -U secum -W --> create schema scc;
+    # \dn
+    url: jdbc:postgresql://localhost:5432/ethdb
+    username: secum
+    password: secum
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate.integration.envers.enabled: false
+    hibernate:
+      ddl-auto: update
+      
+  # PROD : Data Migration Config ---------------------------------  
+  liquibase:
+    enabled: false
+      

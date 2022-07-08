@@ -1,0 +1,53 @@
+# ---------------------------------------------------------------------
+# link generation : 
+# - https://static.brandonpotter.com/kubernetes/DeploymentBuilder.html
+---
+# 1) Create the Secret for private registry :
+#    - kubectl create secret docker-registry regcred --docker-server=registry.hub.docker.com /
+#      --docker-username=mchahdi --docker-password=*********
+---
+# 2) Print & Ckeck the created Secret yaml file :
+#    - kubectl get secret regcred --output=yaml
+---
+# 3) Deployment of the Gateway Microservice:
+#    - kubectl apply -f k8s/eth-platform/deployment-gateway.yaml
+# ---------------------------------------------------------------------
+ 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  selector:
+    matchLabels:
+      app: zuul-apg
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: zuul-apg
+    spec:
+      containers:
+        - name: eth-gateway-ms
+          image: >-
+            registry.hub.docker.com/mchahdi/eth-platform:eth-gateway-ms-0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 3420
+      imagePullSecrets:
+        - name: regcred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-service
+  labels:
+    name: gateway-service
+spec:
+  ports:
+    - port: 8090
+      targetPort: 3420
+      protocol: TCP
+  selector:
+    app: zuul-apg
+  type: LoadBalancer

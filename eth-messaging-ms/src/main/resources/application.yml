@@ -1,0 +1,13 @@
+server:
+  port: 9091
+  compression:
+    enabled: true
+spring:
+  profiles:
+    include: messaging, persistence, dev
+  application:
+    name: eth-messaging
+management:
+  endpoint:
+    health:
+      show-details: always

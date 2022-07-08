@@ -1,0 +1,113 @@
+spring:
+  profiles:
+    active: dev
+# CORE REF MICROSERVICE : Default Setting ----------------------------------------------------
+# ********************************************************************************************
+server.port: 8091
+spring.application.name: coref-ms
+server:
+  servlet:
+    context-path: /api/coref
+eth:
+  api:
+    url:
+      messaging: http://51.83.43.245:9091/
+---
+# --- Default Environnement ------------------------------------------------------------
+# **************************************************************************************
+spring:
+  profiles: default
+
+  # DEFAULT : Spring Data Rest, Servlet Path Configs --------------------------------------
+  #mvc.servlet.path: /api/coref
+  data:
+    rest:
+      # base-path has no effect from this place : using mvc.servlet.path instead
+      #base-path: /api/coref
+      defaultPageSize: 10
+      maxPageSize: 20
+      pageParamName: page
+      limitParamName: size
+      #($propertyname,)+[asc|desc]
+      sortParamName: sort
+      returnBodyOnCreate: true
+      returnBodyOnUpdate: true
+
+  # DEFAULT : Spring Security config  ------------------------------------------------------------------
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+
+# DEFAULT : Service discovry Config -------------------------------------
+eureka:
+  instance:
+    hostname: coref-ms
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    service-url:
+      defaultZone: http://${eureka.uri:localhost}:${eureka.port:8761}/eureka/
+
+
+---
+# --- Dev Environnement ----------------------------------------------------------------------
+# ********************************************************************************************
+
+spring:
+  profiles: dev
+  profiles.include: default
+
+  # DEV : Persistance layer Config ----------------------------------------------------------
+  datasource:
+    url: jdbc:postgresql://20.199.26.249:5433/eth?schema=eth
+    #url: jdbc:postgresql://51.83.43.245:5432/eth?schema=eth
+    #url: jdbc:postgresql://localhost:5432/eth?schema=eth
+    username: postgres
+    password:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      schema: eth
+      username: postgres
+      password: root
+
+
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate.integration.envers.enabled: false
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+
+
+  # DEV : Keycloak configuration ----------------------------------------------------------
+
+keycloak:
+  realm: eth-realm
+  auth-server-url: http://localhost:8081/auth/
+  ssl-required: external
+  resource: eth-core-ref
+  public-client: false
+  bearer-only: true
+  credentials:
+    secret: 5d2233cb-8bc3-4d00-8dc9-e0acb6c365a7
+  principal-attribute: preferred_username
+
+eth:
+  keycloak:
+    admin-realm: realm-management
+    authorization-uri: ${keycloak.auth-server-url}realms/${keycloak.realm}/protocol/openid-connect/token
+    user-uri: ${keycloak.auth-server-url}admin/realms/${keycloak.realm}/users
+    search-uri: ?briefRepresentation=true&first=0&max=20&search=
+    client-uri: ${keycloak.auth-server-url}admin/realms/${keycloak.realm}/clients
+    role-uri: ${keycloak.auth-server-url}admin/realms/${keycloak.realm}/roles
+    role-by-id-uri: ${keycloak.auth-server-url}admin/realms/${keycloak.realm}/roles-by-id
+
+upload:
+           path: C:/upload

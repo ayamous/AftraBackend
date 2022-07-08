@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:eth
+    username: sa
+    password: sa
+    hikari:
+      connection-test-query: SELECT 'HELLO' FROM DUAL
+      pool-name: CNSS_TNS_POOL
+      maximum-pool-size: 10
+      idle-timeout: 15000
+      minimum-idle: 1
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: h2
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+  liquibase:
+    enabled: false
